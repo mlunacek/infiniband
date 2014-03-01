@@ -2,10 +2,19 @@
 #PBS -N job.IB
 #PBS -q janus-admin
 #PBS -l walltime=23:00:00
-#PBS -l nodes=400:ppn=12
+#PBS -l nodes=100:ppn=12
 #PBS -j oe
 
 cd $PBS_O_WORKDIR
+#PBS_JOBID='1234'
+
+mkdir -p 'test-'$PBS_JOBID
+cd 'test-'$PBS_JOBID
+
+cp ../jobs.py .
+cp ../parallel_sets.py .
 
 python jobs.py
 
+rm jobs.py
+rm parallel_sets.py
