@@ -1,0 +1,10 @@
+
+# PBS jobs
+#collect/test-[0-9]+.moab.rc.colorado.edu
+collect/test-*
+collect/job.IB.o*
+*.pyc
+*.csv
+*.json
+meta/ibnetdiscover*
+data
