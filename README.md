@@ -25,5 +25,14 @@ Modify at submission time.
 
 ## Parse results
 
+Parse individual files using the `parse.py` script.
 
+	python parse.py ../collect/test-<JOB_ID>/results.<JOB_ID>
 	
+Parse all the files in the `../collect/test-*` directory:
+
+	python parse_all.py
+
+The ouput directory is specified in the `config.py` file.
+
+

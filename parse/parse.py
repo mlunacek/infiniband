@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 
+import os
 import re
 import sys
 import numpy as np
 import pandas as pd
 
 from functools import partial
+import config
 
 def parse_results(tmp):
 	values = re.findall(r'262144[ ]+([0-9.]+)', tmp)
@@ -15,6 +17,7 @@ def parse_results(tmp):
 		return ave
 	else:
 		return None
+
 
 def parse_parts(parts):
 	path = []
@@ -37,6 +40,7 @@ def parse_parts(parts):
 
 	return path
 
+
 def parse_path(tmp):
 	parts = []
 	tmp = tmp.replace('\n','')
@@ -46,9 +50,11 @@ def parse_path(tmp):
 	path = parse_parts(parts)
 	return path
 
+
 def parse_info(tmp):
 	values = re.findall(r'(node[0-9]{4})', tmp)
 	return '-'.join(values)
+
 
 def parse_test(test):
 
@@ -69,6 +75,7 @@ def parse_test(test):
 	except IndexError:
 		return None
 
+
 def append_results(data, r):
 	count = 0
 	if r is not None:
@@ -84,10 +91,8 @@ def append_results(data, r):
 				count += 1
 	return count
 
-if __name__ == '__main__':
-	
-	# open the file
-	filename = sys.argv[1]
+
+def parse_file(filename):
 	with open(filename, 'r') as infile:
 		data = infile.read()
 
@@ -100,14 +105,26 @@ if __name__ == '__main__':
 		    'pin': [], 'device': [], 'pout': []}
 
 	convert_dataframe = partial(append_results, data)
-	counts = map(convert_dataframe, results)
+	map(convert_dataframe, results)
 	
 	tmp = pd.DataFrame(data)
 	tmp = tmp[['id','res','same','order','device','pin','pout']]
-	print len(tmp)
-	print tmp.head(15)
 
-	tmp.to_csv(filename+'.csv', index=False)
+	base = os.path.basename(filename)+'.csv'
+	csv_file = os.path.join(config.data_path,base)
+	tmp.to_csv(csv_file, index=False)
+
+
+if __name__ == '__main__':
+	
+	# open the file
+	if len(sys.argv) < 2:
+		print 'please specify the path of the file to parse\n'
+		print 'e.g. $python '+ sys.argv[0]+' ../collect/test-*\n'
+		sys.exit(1)
+
+	filename = sys.argv[1]
+	parse_file(filename)
 
 
 
