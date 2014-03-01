@@ -1,0 +1,11 @@
+#!/bin/bash
+#PBS -N job.IB
+#PBS -q janus-admin
+#PBS -l walltime=23:00:00
+#PBS -l nodes=400:ppn=12
+#PBS -j oe
+
+cd $PBS_O_WORKDIR
+
+python jobs.py
+
