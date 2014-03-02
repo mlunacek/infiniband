@@ -3,7 +3,6 @@
 from __future__ import print_function
 
 import os
-import signal
 import sys
 import subprocess
 import pandas as pd
@@ -65,6 +64,7 @@ def create_mpi_command(nodes):
 	cmds.append('echo {n1} {l1} {n2} {l2}')
 	cmds.append('echo "BEFORE"')
 	cmds.append('ibtracert {l1} {l2}')
+	# cmds.append('echo ""')
 	cmds.append('ibtracert {l2} {l1}')
 	cmds.append('echo "RESULTS"')
 	cmds.append('timeout {timeout} mpirun --host {n1},{n2} ')

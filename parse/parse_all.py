@@ -4,6 +4,7 @@ from __future__ import print_function
 
 import glob
 import os
+from functools import partial
 
 import parse
 import parse_ports_cables as ppc
@@ -20,6 +21,10 @@ map(print, files)
 # Parse the cables and ports
 map(ppc.parse_ports, files)
 map(ppc.parse_cables, files)
+
+switches = partial(ppc.parse_cables, switches=True)
+
+map(switches, files)
 
 files = glob.glob(os.path.join(config.data_path,'*.csv'))
 

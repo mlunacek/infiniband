@@ -8,6 +8,8 @@
 cd $PBS_O_WORKDIR
 #PBS_JOBID='1234'
 
+module load python/anaconda-1.6.1 
+
 mkdir -p 'test-'$PBS_JOBID
 cd 'test-'$PBS_JOBID
 
