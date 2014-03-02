@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+import sys
 import pandas as pd
 
 import config
@@ -42,10 +43,10 @@ def ports(df):
 	return ' '.join(path)
 
 def cables(df):
-
-
-	print '-'*80
-	print df
+	"""
+	Creates a list of cables, which are device:port to device:port 
+	links, sorted so that A:B is the same as B:A.
+	"""
 	order = df['order'].values
 	dev = df['device'].values
 	pin = df['pin'].values
@@ -65,16 +66,23 @@ def cables(df):
 			devlinks.append(dev[index])
 			devlinks.append(dev[index])
 
-
+	cables = []
 	for index, l in enumerate(links[1:]):
 		# if same device
 		if devlinks[index-1] == devlinks[index]:
-			print links[index], links[index+1]
-		# else.. not same device
-		# else:
-		# 	print l, links[index-1], links[index], links[index+1]
+			# put in alphabetical order
+			if links[index] < links[index+1]:
+				cables.append(links[index] + '-' + links[index+1])
+			else:
+				cables.append(links[index+1] + '-' + links[index])
 
-	return None
+	return ' '.join(cables)
+
+def check_frame(res):
+	# make sure it all makes sense
+	r2 = res.reset_index()
+	assert r2.shape[0] == r2['id'].groupby(r2['id']).count().shape[0]
+
 
 def parse_ports(filename):
 	job_id = os.path.basename(filename).split('.')[1]
@@ -84,21 +92,34 @@ def parse_ports(filename):
 	res = tmp.groupby(['id','res','same']).apply(ports)
 
 	# make sure it all makes sense
-	r2 = res.reset_index()
-	assert r2.shape[0] == r2['id'].groupby(r2['id']).count().shape[0]
+	check_frame(res)
+	res = res.reset_index()
+	res.to_csv(outfile, index=True)
 
+def parse_cables(filename):
+
+	job_id = os.path.basename(filename).split('.')[1]
+	outfile = os.path.join(config.data_path, 'cables.'+job_id+'.csv')
+
+	tmp = pd.read_csv(filename)
+	res = tmp.groupby(['id','res','same']).apply(cables)
+	check_frame(res)
+	res = res.reset_index()
 	res.to_csv(outfile, index=True)
 
 
+if __name__ == '__main__':
+	
+	# open the file
+	if len(sys.argv) < 2:
+		print 'please specify the path of the file to parse\n'
+		print 'e.g. $python '+ sys.argv[0]+' results.*.csv\n'
+		sys.exit(1)
 
-filename = os.path.join(config.data_path, 'results.2522001.csv')
+	filename = os.path.join(config.data_path, sys.argv[1])
 
-#parse_ports(filename)
-
-tmp = pd.read_csv(filename)
-res = tmp.ix[:30].groupby(['id','res','same']).apply(cables)
-
-print res
+	parse_ports(filename)
+	parse_cables(filename)
 
 
 
