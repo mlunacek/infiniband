@@ -1,12 +1,12 @@
+
 #!/bin/bash
 #PBS -N job.IB
 #PBS -q janus-admin
-#PBS -l walltime=01:30:00
-#PBS -l nodes=601:ppn=12
+#PBS -l walltime=01:00:00
+#PBS -l nodes=590:ppn=12
 #PBS -j oe
 
 cd $PBS_O_WORKDIR
-#PBS_JOBID='1234'
 
 module load python/anaconda-1.6.1 
 
@@ -16,7 +16,7 @@ cd 'test-'$PBS_JOBID
 cp ../jobs.py .
 cp ../parallel_sets.py .
 
-python jobs.py
+python jobs.py 20
 
 rm jobs.py
-rm parallel_sets.py
+rm parallel_sets.py 

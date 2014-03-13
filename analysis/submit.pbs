@@ -1,0 +1,22 @@
+#!/bin/bash
+#PBS -N job.IB
+#PBS -q janus-admin
+#PBS -l walltime=23:00:00
+#PBS -l nodes=25:ppn=12
+#PBS -j oe
+
+cd $PBS_O_WORKDIR
+#PBS_JOBID='1234'
+
+module load python/anaconda-1.9.1
+
+mkdir -p 'test-'$PBS_JOBID
+cd 'test-'$PBS_JOBID
+
+cp ../*.py .
+
+
+python learn_parallel.py
+
+rm *.py
+

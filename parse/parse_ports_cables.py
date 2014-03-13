@@ -43,7 +43,7 @@ def ports(df):
 	path = remove_duplicate_neighbors(path)
 	return ' '.join(path)
 
-def cables(df, switches=False):
+def cables(df):
 	"""
 	Creates a list of cables, which are device:port to device:port 
 	links, sorted so that A:B is the same as B:A.
@@ -69,12 +69,10 @@ def cables(df, switches=False):
 
 	cables = []
 	for index, l in enumerate(links[1:]):
-		# if same device
-		#print devlinks[index-1], devlinks[index], devlinks[index+1]
-
 		if devlinks[index] == devlinks[index+1]:
-			if switches:
-				cables.append(devlinks[index+1])
+			# Add the device..
+			#cables.append(devlinks[index+1])
+			pass
 		else:
 			if links[index] < links[index+1]:
 				cables.append(links[index] + '-' + links[index+1])
@@ -90,6 +88,7 @@ def check_frame(res):
 
 
 def parse_ports(filename):
+	print 'ports', filename
 	job_id = os.path.basename(filename).split('.')[1]
 	outfile = os.path.join(config.data_path, 'ports.'+job_id+'.csv')
 
@@ -101,17 +100,17 @@ def parse_ports(filename):
 	res = res.reset_index()
 	res.to_csv(outfile, index=True)
 
-def parse_cables(filename, switches=False):
-
+def parse_cables(filename):
+	print 'cables', filename
 	job_id = os.path.basename(filename).split('.')[1]
 	outfile = os.path.join(config.data_path, 'cables.'+job_id+'.csv')
-	if switches:
-		outfile = os.path.join(config.data_path, 'switches.'+job_id+'.csv')
+	# if switches:
+	# 	outfile = os.path.join(config.data_path, 'switches.'+job_id+'.csv')
 
 	tmp = pd.read_csv(filename)
-	partial_cables = partial(cables, switches=switches)
+	# partial_cables = partial(cables, switches=switches)
 
-	res = tmp.groupby(['id','res','same']).apply(partial_cables)
+	res = tmp.groupby(['id','res','same']).apply(cables)
 	check_frame(res)
 	res = res.reset_index()
 	res.to_csv(outfile, index=True)

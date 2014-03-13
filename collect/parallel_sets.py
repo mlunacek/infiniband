@@ -148,18 +148,18 @@ if __name__ == '__main__':
 	data = set_gen.all_sets_generator()
 	first = data.next()
 	print('single', time()-tic)
-	total = map(len, data) #consumes the generator
-	print('rest...', time()-tic)
+	# total = map(len, data) #consumes the generator
+	# print('rest...', time()-tic)
 	
-	# But we might need to exclude nodes
-	data = set_gen.all_sets_generator(node_names=True)
-	first = data.next()
-	print(first)
-	map(set_gen.exclude, [2,3,100])
-	map(set_gen.exclude, ['n0','n1','xnode'])
-	print('------')
-	for d in data:
-		print(d)
+	# # But we might need to exclude nodes
+	# data = set_gen.all_sets_generator(node_names=True)
+	# first = data.next()
+	# print(first)
+	# map(set_gen.exclude, [2,3,100])
+	# map(set_gen.exclude, ['n0','n1','xnode'])
+	# print('------')
+	# for d in data:
+	# 	print(d)
 	
 	# #map(print, total)
 	# print('total', reduce(lambda x,y: x+y, total)+len(first))

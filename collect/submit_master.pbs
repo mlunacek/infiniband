@@ -1,0 +1,19 @@
+#!/bin/bash
+#PBS -N job.IB
+#PBS -q janus-admin
+#PBS -l walltime=20:00:00
+#PBS -l nodes=1:ppn=12
+#PBS -j oe
+
+cd $PBS_O_WORKDIR
+
+module load python/anaconda-1.6.1 
+
+# Doing this in bash in case
+# python crashes
+while true
+do
+	echo 'running: python master.py'
+	python master.py
+	sleep 100
+done

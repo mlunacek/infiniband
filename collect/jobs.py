@@ -110,13 +110,23 @@ if __name__ == '__main__':
 
 	filename = 'results.' + os.environ['PBS_JOBID'].split('.')[0]
 
+	num_jobs = 10
+	try:
+		num_jobs = int(sys.argv[1])
+	except:
+		pass
+
+
 	with open(filename,'w') as outfile:
 		write_partial = partial(write_output, outfile)
 		all_sets = set_gen.all_sets_generator(node_names=True)
 		
+		count = 1
+		tic = time()
 		for tests in all_sets:
 			# keep track of how long each session takes
-			tic = time()
+			toc = time()
+			gen_time = toc-tic
 
 			tests_lid = map(add_lids, tests)
 			cmds = map(create_mpi_command, tests_lid)
@@ -124,7 +134,7 @@ if __name__ == '__main__':
 			output = map(wait_cmd, pids)
 
 			#map( lambda x: print(x[1]), output)
-			print( len(output), time()-tic)
+			print('status', count, len(output), time()-toc, gen_time)
 			#map(print, cmds)
 			sys.stdout.flush()
 
@@ -137,7 +147,10 @@ if __name__ == '__main__':
 			down_nodes = pbsnodes_down()
 			set_gen.exclude(down_nodes)
 
-
+			tic = time()
+			count += 1
+			if count > num_jobs:
+				break
 
 
 
